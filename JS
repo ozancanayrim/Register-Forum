@@ -1,0 +1,78 @@
+let form = document.querySelector("#form")
+let userName = document.querySelector("#username")
+let email = document.querySelector("#email")
+let phone = document.querySelector("#phone")
+let password = document.querySelector("#password")
+let rePassword = document.querySelector("#repassword")
+let registerButton = document.querySelector("button")
+
+
+function success(input){
+    input.className = "form-control is-valid"
+}
+
+
+function error(input, message){
+    input.className = "form-control is-invalid"
+    const div = input.nextElementSibling
+    div.className = "invalid-feedback"
+    div.innerHTML = message
+}
+
+
+function checkRules(input, message){
+    if(userName && input.value.length < 7){
+        error(input, message)
+    }if(phone && input.value.length < 10){
+        error(input, message)
+    }
+}
+
+
+function checkRequired(inputs){
+    inputs.forEach(input => {
+        if(input.value === ""){
+            error(input, `${input.id} is required`)
+        }else{
+            success(input)
+        }
+    })
+}
+
+
+function checkLength(input, min, max){
+    if(input.value.length < min){
+        error(input, `${input.id}: The entered value cannot be less than ${min} characters.`)
+    }else if(input.value.length > max){
+        error(input, `${input.id}: Values ​​greater than 12 characters cannot be entered. ${max} characters.`)
+    }else{
+        success(input)
+    }
+}
+
+
+function checkTrim(inputs){
+    inputs.forEach(input => {
+        let result = input.value.replace(/^\s+|\s+$/gm,'')
+        input.value = result
+    })     
+}
+
+
+function passwordMatch(input, input2){
+    if(input.value !== input2.value){
+        error(input2, "Passwords do not match!")
+    }
+}
+
+
+form.addEventListener("submit", (e) => {
+    checkRequired([userName, email, phone, password, rePassword])
+    checkTrim([userName, email, phone, password, rePassword])
+    checkLength(userName, 7, 12)
+    checkLength(phone, 10, 10)
+    checkLength(password, 8, 15)
+    passwordMatch(password, rePassword)
+
+    e.preventDefault()
+})
